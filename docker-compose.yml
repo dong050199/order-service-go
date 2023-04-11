@@ -1,0 +1,41 @@
+version: "3"
+services:
+  database:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=1234
+    ports:
+      - '3308:3306'
+    volumes:
+      - database:/var/lib/mysql
+      - ./data/mydump.sql:/docker-entrypoint-initdb.d/mydump.sql
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "6832:6832"
+      - "5775:5775/udp" 
+      - "6831:6831/udp" 
+      - "6832:6832/udp" 
+      - "5778:5778" 
+      - "9411:9411"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=debug
+  order_app:
+    build: .
+    env_file:
+      - .env
+    ports: 
+      - "8082:8082"
+    depends_on:
+      - database
+      - jaeger
+volumes:
+  database:
+    driver: local

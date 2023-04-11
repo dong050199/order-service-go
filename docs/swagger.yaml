@@ -1,0 +1,233 @@
+definitions:
+  entity.Product:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deleted_at:
+        type: string
+      deleted_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      quantity:
+        type: integer
+      short_description:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  request.UserLogin:
+    properties:
+      password:
+        type: string
+      user_name_or_email:
+        type: string
+    type: object
+  request.UserRegister:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      password:
+        type: string
+      user_name:
+        type: string
+    type: object
+  response.ListProductResponse:
+    properties:
+      page:
+        type: integer
+      products:
+        items:
+          $ref: '#/definitions/entity.Product'
+        type: array
+      total_pages:
+        type: integer
+    type: object
+  wrapper.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+      trace_id:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /product/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get details product
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: campaign_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.Product'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/entity.Product'
+      security:
+      - ApiKeyAuth: []
+      summary: Get details product
+      tags:
+      - Product
+  /product/list:
+    get:
+      consumes:
+      - application/json
+      description: Get details product
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: total
+        in: query
+        name: total
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get details product
+      tags:
+      - Product
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: API for get token from user name email and password
+      parameters:
+      - description: model
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrapper.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wrapper.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wrapper.Response'
+      summary: API for get token from user name email and password
+      tags:
+      - user
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Get my record page for non login usersas
+      parameters:
+      - description: model
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/wrapper.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wrapper.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wrapper.Response'
+      summary: Get my record page for non login usersas
+      tags:
+      - user
+swagger: "2.0"
