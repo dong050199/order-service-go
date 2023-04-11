@@ -39,3 +39,5 @@ services:
 volumes:
   database:
     driver: local
+  jaeger:
+    driver: local

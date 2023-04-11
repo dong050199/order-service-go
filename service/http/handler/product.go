@@ -42,7 +42,9 @@ func composeConfigHandlerName(name string) string {
 // @Router /product/{id} [get]
 func (h *ProductHandler) GetDetails() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		data, err := h.productUsecase.GetDetails(c, cast.ToUint(c.Param("id")))
+		span, ctx := tracing.StartSpanFromCtx(c, "GetDetails")
+		defer span.Finish()
+		data, err := h.productUsecase.GetDetails(ctx, cast.ToUint(c.Param("id")))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, nil)
 			return
@@ -67,7 +69,7 @@ func (h *ProductHandler) GetDetails() gin.HandlerFunc {
 // @Router /product/list [get]
 func (h *ProductHandler) GetList() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		span, ctx := tracing.StartSpanFromCtx(c, "GetDetails")
+		span, ctx := tracing.StartSpanFromCtx(c, "GetList")
 		defer span.Finish()
 		req := request.PagingRequest{
 			Offset:     cast.ToInt(c.Query("offet")),

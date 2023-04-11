@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"order-service/pkg/tracing"
 	"order-service/pkg/wrapper"
 	"order-service/service/model/request"
 	"order-service/service/usecase"
@@ -34,12 +35,14 @@ func NewUserhandler(
 // @Router  /user/register [post]
 func (h *UserHandler) Register() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		span, ctx := tracing.StartSpanFromCtx(c, "GetDetails")
+		defer span.Finish()
 		var req request.UserRegister
 		if err := c.BindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
-		token, err := h.useUsecase.UserRegister(c, req)
+		token, err := h.useUsecase.UserRegister(ctx, req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
@@ -61,12 +64,14 @@ func (h *UserHandler) Register() gin.HandlerFunc {
 // @Router /user/login [post]
 func (h *UserHandler) Login() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		span, ctx := tracing.StartSpanFromCtx(c, "GetDetails")
+		defer span.Finish()
 		var req request.UserLogin
 		if err := c.BindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, err)
 			return
 		}
-		token, err := h.useUsecase.UserLogin(c, req)
+		token, err := h.useUsecase.UserLogin(ctx, req)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
