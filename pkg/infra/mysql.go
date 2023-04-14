@@ -7,10 +7,10 @@ import (
 	"order-service/pkg/config"
 	"order-service/pkg/constants"
 	"order-service/service/model/entity"
+	"order-service/service/model/mock"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // PGDB is wrapper of pg.DB
@@ -37,7 +37,9 @@ func InitMySQL() {
 		DontSupportRenameIndex:    true,  // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
 		DontSupportRenameColumn:   true,  // `change` when rename column, rename column not supported before MySQL 8, MariaDB
 		SkipInitializeWithVersion: false, // auto configure based on currently MySQL version
-	}), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
+		// }), &gorm.Config{Logger: logger.Default.LogMode(logger.Info)})
+	}), &gorm.Config{CreateBatchSize: 1000})
+
 	if err != nil {
 		log.Fatal(fmt.Errorf("Can't instance db connection error: %v", err))
 	}
@@ -46,6 +48,8 @@ func InitMySQL() {
 	db.AutoMigrate(
 		&entity.User{}, &entity.Category{}, &entity.Product{},
 	)
+
+	go mock.MakeMockData(db)
 
 	sqlSingleton = &SQLDB{db}
 }
