@@ -43,13 +43,6 @@ const docTemplate = `{
                         "name": "limit",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "total",
-                        "name": "total",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {

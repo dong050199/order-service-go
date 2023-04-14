@@ -125,11 +125,6 @@ paths:
         name: limit
         required: true
         type: string
-      - description: total
-        in: query
-        name: total
-        required: true
-        type: string
       produces:
       - application/json
       responses:
