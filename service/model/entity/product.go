@@ -9,6 +9,7 @@ type Product struct {
 	Quantity         int        `json:"quantity"`
 	Name             string     `json:"name"`
 	Description      string     `json:"description"`
+	UniqueOffset     int        `json:"unique_offset"`
 	ShortDescription string     `json:"short_description"`
 	ImageURL         string     `json:"image_url"`
 	CreatedAt        *time.Time `json:"created_at"`

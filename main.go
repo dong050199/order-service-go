@@ -15,7 +15,9 @@ import (
 	"order-service/pkg/tracing"
 	"order-service/pkg/tracingfx"
 	"order-service/service/http/router"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
@@ -59,6 +61,17 @@ func registerService(ginEngine *gin.Engine,
 	tracer tracing.Tracer,
 ) {
 	ginEngine.Use(middleware.Recover())
+	ginEngine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000/"},
+		AllowMethods:     []string{"PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		// AllowOriginFunc: func(origin string) bool {
+		// 	return origin == "https://github.com"
+		// },
+		MaxAge: 12 * time.Hour,
+	}))
 	gGroup := ginEngine.Group("api/v1")
 	userRouter.Register(gGroup)
 	productRouter.Register(gGroup)

@@ -74,8 +74,14 @@ func InsertDatMock(products []entity.Product, db *gorm.DB) error {
 	for i := 1; i <= 100; i++ {
 		wg.Add(1)
 		go func() {
+			newListProduct := []entity.Product{}
+
+			for j, product := range products {
+				product.UniqueOffset = int(time.Now().Unix()) + i*10000 + j
+				newListProduct = append(newListProduct, product)
+			}
 			defer wg.Done()
-			err := db.Table("products").Create(&products).Error
+			err := db.Table("products").Create(&newListProduct).Error
 			if err != nil {
 				log.Printf("Error creating %v", err)
 				return
