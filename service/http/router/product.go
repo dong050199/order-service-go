@@ -1,7 +1,6 @@
 package router
 
 import (
-	"order-service/pkg/middleware"
 	"order-service/service/http/handler"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,7 @@ func NewProductRouter(
 
 func (sr *productRouter) Register(r *gin.RouterGroup) {
 	orderGroup := r.Group("/product")
-	orderGroup.Use(middleware.JwtAuthMiddleware())
+	// orderGroup.Use(middleware.JwtAuthMiddleware())
 	{
 		orderGroup.GET("/list", sr.productHandler.GetList())
 		orderGroup.GET("/:id", sr.productHandler.GetDetails())
