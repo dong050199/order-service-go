@@ -25,6 +25,8 @@ definitions:
         type: integer
       short_description:
         type: string
+      unique_offset:
+        type: integer
       updated_at:
         type: string
       updated_by:
@@ -84,11 +86,6 @@ paths:
       - application/json
       description: Get details product
       parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: campaign_id
         in: path
         name: id
@@ -109,8 +106,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/entity.Product'
-      security:
-      - ApiKeyAuth: []
       summary: Get details product
       tags:
       - Product
@@ -120,11 +115,6 @@ paths:
       - application/json
       description: Get details product
       parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: offset
         in: query
         name: offset
@@ -155,8 +145,6 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.ListProductResponse'
-      security:
-      - ApiKeyAuth: []
       summary: Get details product
       tags:
       - Product

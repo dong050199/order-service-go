@@ -33,8 +33,6 @@ func composeConfigHandlerName(name string) string {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
-// @param Authorization header string true "Authorization"
 // @Param id path string true "campaign_id"
 // @Success 200 {object} entity.Product
 // @Failure 400 {object} entity.Product
@@ -58,8 +56,6 @@ func (h *ProductHandler) GetDetails() gin.HandlerFunc {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Security ApiKeyAuth
-// @param Authorization header string true "Authorization"
 // @Param offset query string true "offset"
 // @Param limit query string true "limit"
 // @Param total query string true "total"

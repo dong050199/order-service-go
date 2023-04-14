@@ -23,6 +23,9 @@ clean:
 
 swagger:
 	swag init -g $(MAIN_FILE)
+	
+swagger-install:
+	go install github.com/swaggo/swag/cmd/swag@latest
 
 test:
 	go test ./...

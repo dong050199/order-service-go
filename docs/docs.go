@@ -18,11 +18,6 @@ const docTemplate = `{
     "paths": {
         "/product/list": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Get details product",
                 "consumes": [
                     "application/json"
@@ -35,13 +30,6 @@ const docTemplate = `{
                 ],
                 "summary": "Get details product",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "offset",
@@ -88,11 +76,6 @@ const docTemplate = `{
         },
         "/product/{id}": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Get details product",
                 "consumes": [
                     "application/json"
@@ -105,13 +88,6 @@ const docTemplate = `{
                 ],
                 "summary": "Get details product",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Authorization",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "campaign_id",
@@ -298,6 +274,9 @@ const docTemplate = `{
                 },
                 "short_description": {
                     "type": "string"
+                },
+                "unique_offset": {
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"

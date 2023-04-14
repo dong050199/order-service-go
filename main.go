@@ -62,7 +62,7 @@ func registerService(ginEngine *gin.Engine,
 ) {
 	ginEngine.Use(middleware.Recover())
 	ginEngine.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000/"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "DELETE", "OPTIONS", "GET"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
