@@ -76,7 +76,6 @@ func registerService(ginEngine *gin.Engine,
 	userRouter.Register(gGroup)
 	productRouter.Register(gGroup)
 	gGroup.Use(ginutils.InjectTraceID, tracer.TracingHandler)
-
 }
 
 func main() {

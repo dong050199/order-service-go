@@ -3,6 +3,7 @@ package tracing
 import (
 	"context"
 	"io"
+	"log"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
@@ -21,8 +22,11 @@ func Initialize(cfg appconfig.JaegerConfig) (tracer opentracing.Tracer, closer i
 		},
 	}
 
+	log.Printf("Initializing Config log %s", cfg.Endpoint)
+
 	tracer, closer, err = configuration.NewTracer(config.Logger(jaeger.StdLogger))
 	if err != nil {
+		log.Fatal("CANT INIT TRACING")
 		return
 	}
 	opentracing.SetGlobalTracer(tracer)

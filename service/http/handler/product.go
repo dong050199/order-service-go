@@ -58,7 +58,6 @@ func (h *ProductHandler) GetDetails() gin.HandlerFunc {
 // @Produce json
 // @Param offset query string true "offset"
 // @Param limit query string true "limit"
-// @Param total query string true "total"
 // @Success 200 {object} response.ListProductResponse
 // @Failure 400 {object} response.ListProductResponse
 // @Failure 500 {object} response.ListProductResponse
@@ -68,7 +67,7 @@ func (h *ProductHandler) GetList() gin.HandlerFunc {
 		span, ctx := tracing.StartSpanFromCtx(c, "GetList")
 		defer span.Finish()
 		req := request.PagingRequest{
-			Offset:     cast.ToInt(c.Query("offet")),
+			Offset:     cast.ToInt(c.Query("offset")),
 			Limit:      cast.ToInt(c.Query("limit")),
 			TotalPages: cast.ToInt(c.Query("total")),
 		}
