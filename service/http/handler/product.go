@@ -56,8 +56,8 @@ func (h *ProductHandler) GetDetails() gin.HandlerFunc {
 // @Tags Product
 // @Accept json
 // @Produce json
-// @Param offset query string true "offset"
-// @Param limit query string true "limit"
+// @Param page query string true "page"
+// @Param size query string true "size"
 // @Success 200 {object} response.ListProductResponse
 // @Failure 400 {object} response.ListProductResponse
 // @Failure 500 {object} response.ListProductResponse
@@ -67,9 +67,8 @@ func (h *ProductHandler) GetList() gin.HandlerFunc {
 		span, ctx := tracing.StartSpanFromCtx(c, "GetList")
 		defer span.Finish()
 		req := request.PagingRequest{
-			Offset:     cast.ToInt(c.Query("offset")),
-			Limit:      cast.ToInt(c.Query("limit")),
-			TotalPages: cast.ToInt(c.Query("total")),
+			Page: cast.ToInt(c.Query("page")),
+			Size: cast.ToInt(c.Query("size")),
 		}
 
 		data, err := h.productUsecase.GetList(ctx, req)

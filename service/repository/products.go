@@ -58,7 +58,7 @@ func (m *productRepo) GetByID(
 func (m *productRepo) GetList(
 	req request.PagingRequest,
 ) (resp []entity.Product, err error) {
-	dbQuery := m.ormDB.Offset(req.Offset).Limit(req.Limit).Order("id ASC").Find(&resp)
+	dbQuery := m.ormDB.Offset(req.GetOffsetFromRequest()).Limit(req.Size).Order("id ASC").Find(&resp)
 	if dbQuery.Error != nil {
 		err = dbQuery.Error
 		if dbQuery.Error == gorm.ErrEmptySlice {
@@ -84,7 +84,7 @@ func (m *productRepo) GetPaging(
 		return
 	}
 
-	totalPages = int(NumberRecode) / int(req.Limit)
+	totalPages = int(NumberRecode) / int(req.Size)
 	if totalPages == 0 {
 		return
 	}

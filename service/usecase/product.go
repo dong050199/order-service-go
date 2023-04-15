@@ -42,7 +42,7 @@ func (p *productUsecase) GetList(
 		return
 	}
 
-	resp.Page = req.Offset
+	resp.Page = req.Page
 	resp.TotalPage = totalPage
 	resp.Products = campaigns
 	return

@@ -1,7 +1,11 @@
 package request
 
 type PagingRequest struct {
-	Offset     int `json:"offset"`
-	Limit      int `json:"limit"`
-	TotalPages int `json:"totalPages"`
+	Page int `json:"page"`
+	Size int `json:"size"`
+}
+
+func (l *PagingRequest) GetOffsetFromRequest() int {
+	offset := (l.Page - 1) * l.Size
+	return offset
 }
