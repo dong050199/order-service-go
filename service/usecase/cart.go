@@ -124,3 +124,35 @@ func (c *cartUsercase) UpdateCart(
 	}
 	return
 }
+
+func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID uint) error {
+	cartInfo, err := c.GetCart(ctx, cartID)
+	if err != nil {
+		log.Printf("GetCart: %v", err)
+		return err
+	}
+
+	var productOrder []entity.ProductOrder
+	var totalPrice int
+	for _, product := range cartInfo.Products {
+		productOrder = append(productOrder, entity.ProductOrder{
+			ID:        cartID,
+			ProductID: product.ID,
+			Quantity:  product.Quantity,
+			Price:     product.Price,
+		})
+		totalPrice += int(product.Price) * product.Quantity
+	}
+
+	err = c.cartRepo.CreateSaleOrder(ctx, entity.Order{
+		ProductOrder: productOrder,
+		UserID:       userID,
+		TotalPrice:   totalPrice,
+	})
+	if err != nil {
+		log.Printf("GetCart: %v", err)
+		return err
+	}
+
+	return nil
+}

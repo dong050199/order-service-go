@@ -12,6 +12,7 @@ type IcartRepo interface {
 	GetUserCart(ctx context.Context, cartID uint) (cart entity.Cart, err error)
 	UpdateCartUser(ctx context.Context, req []entity.ProductCart) error
 	DeleteCartUser(ctx context.Context, req []entity.ProductCart) error
+	CreateSaleOrder(ctx context.Context, req entity.Order) error
 }
 
 type cartRepo struct {
@@ -38,4 +39,8 @@ func (r *cartRepo) UpdateCartUser(ctx context.Context, req []entity.ProductCart)
 
 func (r *cartRepo) DeleteCartUser(ctx context.Context, req []entity.ProductCart) error {
 	return r.ormDB.Delete(&req).Error
+}
+
+func (r *cartRepo) CreateSaleOrder(ctx context.Context, req entity.Order) error {
+	return r.ormDB.Create(&req).Error
 }

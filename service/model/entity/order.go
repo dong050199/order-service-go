@@ -20,7 +20,6 @@ type ProductOrder struct {
 	ID        uint `gorm:"primaryKey"`
 	ProductID uint
 	OrderID   uint
-	UserID    uint
 	Quantity  int        `gorm:"column:quantity"`
 	Price     float64    `gorm:"column:price"`
 	CreatedAt *time.Time `gorm:"column:created_at"`
