@@ -28,7 +28,7 @@ func (sr *cartRouter) Register(r *gin.RouterGroup) {
 	page.Use(middleware.JwtAuthMiddleware())
 	{
 		page.GET("", sr.cartHandler.GetCart())
-		page.POST("", sr.cartHandler.UpdateCart())
+		page.PUT("", sr.cartHandler.UpdateCart())
 		page.GET("/create-order", sr.cartHandler.CreateSaleOrder())
 	}
 }
