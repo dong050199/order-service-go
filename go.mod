@@ -81,7 +81,7 @@ require (
 	github.com/ugorji/go/codec v1.2.9 // indirect
 	go.uber.org/fx v1.19.2
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
-	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/net v0.8.0
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect

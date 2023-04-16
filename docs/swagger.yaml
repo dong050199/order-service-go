@@ -21,6 +21,10 @@ definitions:
         type: string
       price:
         type: number
+      productCart:
+        items:
+          $ref: '#/definitions/entity.ProductCart'
+        type: array
       productOrder:
         items:
           $ref: '#/definitions/entity.ProductOrder'
@@ -35,6 +39,17 @@ definitions:
         type: string
       updated_by:
         type: string
+    type: object
+  entity.ProductCart:
+    properties:
+      cartID:
+        type: integer
+      id:
+        type: integer
+      productID:
+        type: integer
+      quantity:
+        type: integer
     type: object
   entity.ProductOrder:
     properties:
@@ -60,6 +75,22 @@ definitions:
         type: string
       updatedBy:
         type: string
+      userID:
+        type: integer
+    type: object
+  request.ProductCart:
+    properties:
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  request.UpdateCartRequest:
+    properties:
+      produc_ids:
+        items:
+          $ref: '#/definitions/request.ProductCart'
+        type: array
     type: object
   request.UserLogin:
     properties:
@@ -109,6 +140,71 @@ definitions:
 info:
   contact: {}
 paths:
+  /cart:
+    get:
+      consumes:
+      - application/json
+      description: Get cart
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get cart
+      tags:
+      - Cart
+    put:
+      consumes:
+      - application/json
+      description: Update cart
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: model
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateCartRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Update cart
+      tags:
+      - Cart
   /product/{id}:
     get:
       consumes:

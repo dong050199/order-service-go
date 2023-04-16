@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Product struct {
-	ID               uint    `json:"id"`
+	ID               uint    `gorm:"primaryKey"`
 	CategoryID       int     `json:"category_id"`
 	Price            float64 `json:"price"`
 	Quantity         int     `json:"quantity"`
@@ -12,6 +12,7 @@ type Product struct {
 	UniqueOffset     int     `json:"unique_offset"`
 	ShortDescription string  `json:"short_description"`
 	ProductOrder     []ProductOrder
+	ProductCart      []ProductCart
 	ImageURL         string     `json:"image_url"`
 	CreatedAt        *time.Time `json:"created_at"`
 	CreatedBy        string     `json:"created_by"`

@@ -14,16 +14,20 @@ var Module = fx.Provide(
 	// provide usecase
 	ProvideUserUsecase,
 	provideOrderUsecase,
+	provideCartUsecase,
 	// handler
 	provideUserHandler,
 	provideProductHandler,
+	provideCartHandler,
 	// router
 	provodeUserRouter,
 	provideOrderRouter,
+	provideCartRouter,
 
 	// provide repositories
 	provideUserRepo,
 	provideProducRepo,
+	provideCartRepo,
 )
 
 // Handler
@@ -37,6 +41,12 @@ func provideProductHandler(
 	return handler.NewProductHandler(productUsecase)
 }
 
+func provideCartHandler(
+	cartUsecase usecase.IcartUsercase,
+) handler.CartHandler {
+	return handler.NewCartHandler(cartUsecase)
+}
+
 // Router
 func provodeUserRouter(
 	userHandlerr handler.UserHandler,
@@ -47,6 +57,12 @@ func provideOrderRouter(
 	productHandler handler.ProductHandler,
 ) router.ProductRouter {
 	return router.NewProductRouter(productHandler)
+}
+
+func provideCartRouter(
+	cartHandler handler.CartHandler,
+) router.CartRouter {
+	return router.NewCartRouter(cartHandler)
 }
 
 // Usecases
@@ -62,9 +78,20 @@ func provideOrderUsecase(
 	return usecase.NewProductUsecase(productRepo)
 }
 
+func provideCartUsecase(
+	cartRepo repository.IcartRepo,
+	productRepo repository.IproductRepo,
+) usecase.IcartUsercase {
+	return usecase.NewCartUsercase(cartRepo, productRepo)
+}
+
 // Repositories
 func provideUserRepo() repository.IuserRepo {
 	return repository.NewUserRepo()
+}
+
+func provideCartRepo() repository.IcartRepo {
+	return repository.NewCartRepo()
 }
 
 // Repositories

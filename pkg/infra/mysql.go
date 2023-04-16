@@ -47,7 +47,13 @@ func InitMySQL() {
 
 	// auto migrate db tables
 	db.AutoMigrate(
-		&entity.User{}, &entity.Category{}, &entity.Product{},
+		&entity.User{},
+		&entity.Category{},
+		&entity.Order{},
+		&entity.Cart{},
+		&entity.ProductCart{},
+		&entity.ProductOrder{},
+		&entity.Product{},
 	)
 
 	go mock.MakeMockData(db)

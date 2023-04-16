@@ -13,8 +13,8 @@ import (
 var timeNow = time.Now().UTC()
 
 type IuserRepo interface {
-	CreateUser(tx *gorm.DB, userInfo entity.User) (clientID uint, err error)
-	ValidateUser(userInfo entity.User) (valid bool, userID uint, err error)
+	CreateUser(tx *gorm.DB, userInfo entity.User) (clientID uint, cartID uint, err error)
+	ValidateUser(userInfo entity.User) (valid bool, userID uint, cartID uint, err error)
 	UpdateUser(tx *gorm.DB, userInfo entity.User) error
 	DeleteUser(tx *gorm.DB, userInfo entity.User) error
 	GetUserInfoTopPage(tx *gorm.DB, userID uint) (userInfo entity.User, err error)
@@ -63,24 +63,27 @@ func (u *userRepo) GetMyPage(tx *gorm.DB, userID uint) (userInfo entity.User, er
 	return
 }
 
-func (u *userRepo) CreateUser(tx *gorm.DB, userInfo entity.User) (clientID uint, err error) {
+func (u *userRepo) CreateUser(tx *gorm.DB, userInfo entity.User) (clientID uint, cartID uint, err error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userInfo.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return
 	}
 	userInfo.Password = string(hashedPassword)
 	userInfo.CreatedAt = &timeNow
+
+	userInfo.Cart.CreatedAt = &timeNow
 	dbExecute := tx.Create(&userInfo)
 	if dbExecute.Error != nil {
-		return 0, dbExecute.Error
+		return 0, 0, dbExecute.Error
 	}
 
-	return userInfo.ID, nil
+	return userInfo.ID, userInfo.Cart.ID, nil
 }
 
-func (u *userRepo) ValidateUser(userInfo entity.User) (valid bool, userID uint, err error) {
+func (u *userRepo) ValidateUser(userInfo entity.User) (valid bool, userID uint, cartID uint, err error) {
 	var userInfoDB entity.User
 	dbQuery := u.ormDB.
+		Preload("Cart").
 		Where("deleted_at IS NULL").
 		Where(&entity.User{UserName: userInfo.UserName, DeletedAt: nil}).
 		Or(&entity.User{Email: userInfo.Email, DeletedAt: nil}).
@@ -93,6 +96,7 @@ func (u *userRepo) ValidateUser(userInfo entity.User) (valid bool, userID uint, 
 	if bcrypt.CompareHashAndPassword([]byte(userInfoDB.Password), []byte(userInfo.Password)) == nil {
 		valid = true
 		userID = userInfo.ID
+		cartID = userInfo.Cart.ID
 		return
 	}
 

@@ -44,7 +44,7 @@ func (u *userUsecase) UserRegister(
 
 	defer infra.ReleaseTransaction(tx, err)
 
-	userID, err := u.userRepo.CreateUser(tx, req.ToEntityModel())
+	userID, cartID, err := u.userRepo.CreateUser(tx, req.ToEntityModel())
 	if err != nil {
 		return
 	}
@@ -54,7 +54,7 @@ func (u *userUsecase) UserRegister(
 		userLogin = req.UserName
 	}
 
-	token, err = u.generateToken(userID, userLogin)
+	token, err = u.generateToken(userID, cartID, userLogin)
 	if err != nil {
 		return
 	}
@@ -74,7 +74,7 @@ func (u *userUsecase) UserLogin(
 
 	defer infra.ReleaseTransaction(tx, err)
 
-	valid, userID, err := u.userRepo.ValidateUser(entity.User{
+	valid, userID, cartID, err := u.userRepo.ValidateUser(entity.User{
 		UserName: req.UserNameOrEmail,
 		Email:    req.UserNameOrEmail,
 		Password: req.Password,
@@ -84,7 +84,7 @@ func (u *userUsecase) UserLogin(
 		return
 	}
 
-	token, err = u.generateToken(userID, req.UserNameOrEmail)
+	token, err = u.generateToken(userID, cartID, req.UserNameOrEmail)
 	if err != nil {
 		return
 	}
@@ -143,13 +143,14 @@ func (u *userUsecase) UpdateUser(
 	return
 }
 
-func (v *userUsecase) generateToken(userID uint, userNameOrEmail string) (string, error) {
+func (v *userUsecase) generateToken(userID uint, cartID uint, userNameOrEmail string) (string, error) {
 	lifespan, err := strconv.Atoi(config.JwtConfig().TokenHourLifeSpan)
 	if err != nil {
 		return "", err
 	}
 
 	claims := jwt.MapClaims{}
+	claims[constants.CartID] = cartID
 	claims[constants.Authorized] = true
 	claims[constants.UserID] = userID
 	claims[constants.Email] = userNameOrEmail

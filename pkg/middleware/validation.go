@@ -9,6 +9,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 )
 
 func JwtAuthMiddleware() gin.HandlerFunc {
@@ -52,6 +53,12 @@ func ExtractUserIDFromContext(c *gin.Context) int {
 	return c.GetInt(constants.UserID)
 }
 
+// return 0 if can't extract userID from token
+func ExtractCartIDFromContext(c *gin.Context) int {
+	val := c.GetString(constants.CartID)
+	return cast.ToInt(val)
+}
+
 func ExtractTokenID(c *gin.Context) error {
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -69,8 +76,14 @@ func ExtractTokenID(c *gin.Context) error {
 		if len(userID) == 0 {
 			return nil
 		}
+		cartID := fmt.Sprint(claims[constants.CartID])
+		if len(cartID) == 0 {
+			return nil
+		}
 		// set and get from conetx cross middlerware
 		c.Set(constants.UserID, userID)
+		c.Set(constants.CartID, cartID)
+		fmt.Print("CARD ID", cartID)
 		return nil
 	}
 	return nil

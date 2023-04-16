@@ -7,4 +7,5 @@ const (
 	Email      = "email"
 	Authorized = "authorized"
 	ExpireDate = "exp"
+	CartID     = "cart_id"
 )

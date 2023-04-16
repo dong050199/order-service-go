@@ -12,6 +12,7 @@ type IproductRepo interface {
 	GetList(req request.PagingRequest) (meals []entity.Product, err error)
 	GetByID(id uint) (meals entity.Product, err error)
 	GetPaging(req request.PagingRequest) (totalPages int, err error)
+	GetByIDs(req []uint) (resp []entity.Product, err error)
 }
 
 type productRepo struct {
@@ -89,5 +90,20 @@ func (m *productRepo) GetPaging(
 		return
 	}
 
+	return
+}
+
+func (m *productRepo) GetByIDs(
+	req []uint,
+) (resp []entity.Product, err error) {
+	dbQuery := m.ormDB.Find(&resp, req)
+	if dbQuery.Error != nil {
+		err = dbQuery.Error
+		if dbQuery.Error == gorm.ErrEmptySlice {
+			err = nil
+			return
+		}
+		return
+	}
 	return
 }

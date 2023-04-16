@@ -58,6 +58,7 @@ func startServer(ginEngine *gin.Engine, lifecycle fx.Lifecycle) {
 func registerService(ginEngine *gin.Engine,
 	userRouter router.UserRouter,
 	productRouter router.ProductRouter,
+	cartRouter router.CartRouter,
 	tracer tracing.Tracer,
 ) {
 	ginEngine.Use(middleware.Recover())
@@ -75,6 +76,7 @@ func registerService(ginEngine *gin.Engine,
 	gGroup := ginEngine.Group("api/v1")
 	userRouter.Register(gGroup)
 	productRouter.Register(gGroup)
+	cartRouter.Register(gGroup)
 	gGroup.Use(ginutils.InjectTraceID, tracer.TracingHandler)
 }
 

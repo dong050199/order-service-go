@@ -61,3 +61,4 @@ func (p *productUsecase) GetDetails(
 	}
 	return
 }
+
