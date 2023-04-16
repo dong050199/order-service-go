@@ -1,9 +1,12 @@
 package usecase
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"order-service/service/model/entity"
 	"order-service/service/model/request"
 	"order-service/service/model/response"
@@ -13,6 +16,7 @@ import (
 type IcartUsercase interface {
 	GetCart(ctx context.Context, cartID uint) (cart response.ListProductResponse, err error)
 	UpdateCart(ctx context.Context, cartID uint, req request.UpdateCartRequest) (cerr error)
+	CreateSalesOrder(ctx context.Context, cartID uint, userID uint) error
 }
 
 type cartUsercase struct {
@@ -144,15 +148,56 @@ func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID
 		totalPrice += int(product.Price) * product.Quantity
 	}
 
-	err = c.cartRepo.CreateSaleOrder(ctx, entity.Order{
+	var request = entity.Order{
 		ProductOrder: productOrder,
 		UserID:       userID,
 		TotalPrice:   totalPrice,
-	})
+	}
+
+	err = c.cartRepo.CreateSaleOrder(ctx, request)
 	if err != nil {
 		log.Printf("GetCart: %v", err)
 		return err
 	}
 
+	out, err := json.Marshal(request)
+	if err != nil {
+		panic(err)
+	}
+
+	c.CallGoogleChat(string(out))
+
 	return nil
+}
+
+func (c *cartUsercase) CallGoogleChat(text string) {
+	var ThreadName = "spaces/AAAAtTHk3b8/threads/I1ghIyG8pDo"
+	var URL = "https://chat.googleapis.com/v1/spaces/AAAAtTHk3b8/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=p82eX5PmSpaRfjmd_rajXI2ZBBIVonlV8qX9X5hPeqE%3D"
+
+	type ggResponse struct {
+		Name string `json:"name"`
+		Text string `json:"text"`
+	}
+	type thread struct {
+		Name string `json:"name"`
+	}
+	messageData := struct {
+		Text   string `json:"text"`
+		Thread thread `json:"thread"`
+	}{
+		Text: "This is test message from go test",
+		Thread: thread{
+			Name: ThreadName,
+		},
+	}
+
+	var buf bytes.Buffer
+	err := json.NewEncoder(&buf).Encode(messageData)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = http.Post(URL, "application/json", &buf)
+	if err != nil {
+		panic(err)
+	}
 }

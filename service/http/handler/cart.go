@@ -76,3 +76,29 @@ func (h *CartHandler) UpdateCart() gin.HandlerFunc {
 		c.JSON(http.StatusOK, nil)
 	}
 }
+
+// @Summary Create order
+// @Description Create order
+// @Tags Order
+// @Accept json
+// @Security ApiKeyAuth
+// @param Authorization header string true "Authorization"
+// @Success 200 {object} response.ListProductResponse
+// @Failure 400 {object} response.ListProductResponse
+// @Failure 500 {object} response.ListProductResponse
+// @Router /cart/create-order [get]
+func (h *CartHandler) CreateSaleOrder() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		span, ctx := tracing.StartSpanFromCtx(c, "GetCart")
+		defer span.Finish()
+
+		err := h.cartUsecase.CreateSalesOrder(ctx,
+			uint(middleware.ExtractCartIDFromContext(c)),
+			uint(middleware.ExtractUserIDFromContext(c)))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+		c.JSON(http.StatusOK, nil)
+	}
+}

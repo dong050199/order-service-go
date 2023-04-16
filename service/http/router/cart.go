@@ -29,5 +29,6 @@ func (sr *cartRouter) Register(r *gin.RouterGroup) {
 	{
 		page.GET("", sr.cartHandler.GetCart())
 		page.POST("", sr.cartHandler.UpdateCart())
+		page.GET("/create-order", sr.cartHandler.CreateSaleOrder())
 	}
 }

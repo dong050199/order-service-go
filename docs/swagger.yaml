@@ -75,8 +75,6 @@ definitions:
         type: string
       updatedBy:
         type: string
-      userID:
-        type: integer
     type: object
   request.ProductCart:
     properties:
@@ -205,6 +203,35 @@ paths:
       summary: Update cart
       tags:
       - Cart
+  /cart/create-order:
+    get:
+      consumes:
+      - application/json
+      description: Create order
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ListProductResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create order
+      tags:
+      - Order
   /product/{id}:
     get:
       consumes:

@@ -50,7 +50,8 @@ func ExtractToken(c *gin.Context) string {
 
 // return 0 if can't extract userID from token
 func ExtractUserIDFromContext(c *gin.Context) int {
-	return c.GetInt(constants.UserID)
+	val := c.GetString(constants.UserID)
+	return cast.ToInt(val)
 }
 
 // return 0 if can't extract userID from token
