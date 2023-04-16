@@ -85,8 +85,8 @@ func (u *userRepo) ValidateUser(userInfo entity.User) (valid bool, userID uint, 
 	dbQuery := u.ormDB.
 		Preload("Cart").
 		Where("deleted_at IS NULL").
-		Where(&entity.User{UserName: userInfo.UserName, DeletedAt: nil}).
-		Or(&entity.User{Email: userInfo.Email, DeletedAt: nil}).
+		Where("user_name = ?", userInfo.UserName).
+		Or("email = ?", userInfo.Email).
 		Find(&userInfoDB)
 	if dbQuery.Error != nil {
 		err = dbQuery.Error
@@ -95,8 +95,8 @@ func (u *userRepo) ValidateUser(userInfo entity.User) (valid bool, userID uint, 
 
 	if bcrypt.CompareHashAndPassword([]byte(userInfoDB.Password), []byte(userInfo.Password)) == nil {
 		valid = true
-		userID = userInfo.ID
-		cartID = userInfo.Cart.ID
+		userID = userInfoDB.ID
+		cartID = userInfoDB.Cart.ID
 		return
 	}
 

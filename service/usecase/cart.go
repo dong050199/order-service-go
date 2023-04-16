@@ -185,7 +185,7 @@ func (c *cartUsercase) CallGoogleChat(text string) {
 		Text   string `json:"text"`
 		Thread thread `json:"thread"`
 	}{
-		Text: "This is test message from go test",
+		Text: text,
 		Thread: thread{
 			Name: ThreadName,
 		},
