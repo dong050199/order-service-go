@@ -96,6 +96,9 @@ func (m *productRepo) GetPaging(
 func (m *productRepo) GetByIDs(
 	req []uint,
 ) (resp []entity.Product, err error) {
+	if len(req) == 0 {
+		return
+	}
 	dbQuery := m.ormDB.Find(&resp, req)
 	if dbQuery.Error != nil {
 		err = dbQuery.Error
