@@ -32,15 +32,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "offset",
-                        "name": "offset",
+                        "description": "page",
+                        "name": "page",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "limit",
-                        "name": "limit",
+                        "description": "size",
+                        "name": "size",
                         "in": "query",
                         "required": true
                     }
@@ -262,6 +262,12 @@ const docTemplate = `{
                 "price": {
                     "type": "number"
                 },
+                "productOrder": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.ProductOrder"
+                    }
+                },
                 "quantity": {
                     "type": "integer"
                 },
@@ -275,6 +281,44 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.ProductOrder": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "deletedBy": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "orderID": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "productID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "updatedBy": {
                     "type": "string"
                 }
             }

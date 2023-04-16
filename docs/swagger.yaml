@@ -21,6 +21,10 @@ definitions:
         type: string
       price:
         type: number
+      productOrder:
+        items:
+          $ref: '#/definitions/entity.ProductOrder'
+        type: array
       quantity:
         type: integer
       short_description:
@@ -30,6 +34,31 @@ definitions:
       updated_at:
         type: string
       updated_by:
+        type: string
+    type: object
+  entity.ProductOrder:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        type: string
+      deletedAt:
+        type: string
+      deletedBy:
+        type: string
+      id:
+        type: integer
+      orderID:
+        type: integer
+      price:
+        type: number
+      productID:
+        type: integer
+      quantity:
+        type: integer
+      updatedAt:
+        type: string
+      updatedBy:
         type: string
     type: object
   request.UserLogin:
@@ -115,14 +144,14 @@ paths:
       - application/json
       description: Get details product
       parameters:
-      - description: offset
+      - description: page
         in: query
-        name: offset
+        name: page
         required: true
         type: string
-      - description: limit
+      - description: size
         in: query
-        name: limit
+        name: size
         required: true
         type: string
       produces:
