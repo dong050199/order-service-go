@@ -3,14 +3,15 @@ package entity
 import "time"
 
 type Product struct {
-	ID               uint       `json:"id"`
-	CategoryID       int        `json:"category_id"`
-	Price            float64    `json:"price"`
-	Quantity         int        `json:"quantity"`
-	Name             string     `json:"name"`
-	Description      string     `json:"description"`
-	UniqueOffset     int        `json:"unique_offset"`
-	ShortDescription string     `json:"short_description"`
+	ID               uint    `json:"id"`
+	CategoryID       int     `json:"category_id"`
+	Price            float64 `json:"price"`
+	Quantity         int     `json:"quantity"`
+	Name             string  `json:"name"`
+	Description      string  `json:"description"`
+	UniqueOffset     int     `json:"unique_offset"`
+	ShortDescription string  `json:"short_description"`
+	ProductOrder     []ProductOrder
 	ImageURL         string     `json:"image_url"`
 	CreatedAt        *time.Time `json:"created_at"`
 	CreatedBy        string     `json:"created_by"`
