@@ -59,6 +59,11 @@ func (c *cartUsercase) GetCart(
 		log.Printf("GetByIDs: %v", err)
 		return
 	}
+
+	for _, product := range cart.Products {
+		cart.TotalPrice += int(product.Price) * product.Quantity
+	}
+
 	return
 }
 
