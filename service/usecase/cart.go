@@ -103,13 +103,13 @@ func (c *cartUsercase) UpdateCart(
 		}
 	}
 
-	for _, product := range req.Products {
+	for i, product := range req.Products {
 		fmt.Println("REQ", req)
 		if _, exist := mapProductCartDBFullModel[product.ProductID]; exist {
 			updateCartReq = append(updateCartReq, entity.ProductCart{
 				ID:        mapProductCartDBFullModel[product.ProductID].ID,
 				CartID:    mapProductCartDBFullModel[product.ProductID].CartID,
-				Quantity:  mapProductCartDBFullModel[product.ProductID].Quantity,
+				Quantity:  req.Products[i].Quantity,
 				ProductID: mapProductCartDBFullModel[product.ProductID].ProductID,
 			})
 			continue
@@ -185,7 +185,7 @@ func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID
 }
 
 func (c *cartUsercase) UpdateStock(tx *gorm.DB) error {
-	
+
 	return nil
 }
 
