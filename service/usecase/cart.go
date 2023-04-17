@@ -7,10 +7,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"order-service/pkg/infra"
 	"order-service/service/model/entity"
 	"order-service/service/model/request"
 	"order-service/service/model/response"
 	"order-service/service/repository"
+
+	"gorm.io/gorm"
 )
 
 type IcartUsercase interface {
@@ -140,12 +143,18 @@ func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID
 		log.Printf("GetCart: %v", err)
 		return err
 	}
+	tx, err := infra.BeginTransaction()
+	if err != nil {
+		log.Printf("BeginTransaction: %v", err)
+		return err
+	}
+
+	defer infra.ReleaseTransaction(tx, err)
 
 	var productOrder []entity.ProductOrder
 	var totalPrice int
 	for _, product := range cartInfo.Products {
 		productOrder = append(productOrder, entity.ProductOrder{
-			ID:        cartID,
 			ProductID: product.ID,
 			Quantity:  product.Quantity,
 			Price:     product.Price,
@@ -170,8 +179,13 @@ func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID
 		panic(err)
 	}
 
-	c.CallGoogleChat(string(out))
+	go c.CallGoogleChat(string(out))
 
+	return nil
+}
+
+func (c *cartUsercase) UpdateStock(tx *gorm.DB) error {
+	
 	return nil
 }
 

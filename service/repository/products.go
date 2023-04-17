@@ -5,6 +5,7 @@ import (
 	"order-service/service/model/entity"
 	"order-service/service/model/request"
 
+	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )
 
@@ -109,4 +110,12 @@ func (m *productRepo) GetByIDs(
 		return
 	}
 	return
+}
+
+func (p *productRepo) UpdateProductTx(
+	ctx context.Context,
+	tx *gorm.DB,
+	req []entity.Product,
+) (err error) {
+	return tx.Save(&req).Error
 }
