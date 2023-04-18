@@ -44,7 +44,14 @@ func (p *productUsecase) GetList(
 
 	resp.Page = req.Page
 	resp.TotalPage = totalPage
-	resp.Products = campaigns
+
+	for _, product := range campaigns {
+		resp.Products = append(resp.Products, response.ProductResponse{
+			Product:    product,
+			TotalPrice: 0,
+		})
+	}
+
 	return
 }
 
@@ -61,4 +68,3 @@ func (p *productUsecase) GetDetails(
 	}
 	return
 }
-
