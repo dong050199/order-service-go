@@ -56,6 +56,7 @@ func (c *cartUsercase) GetCart(
 	listProductByIDs, err := c.productRepo.GetByIDs(listProductCart)
 	for _, product := range listProductByIDs {
 		product.Quantity = mapProductCartDB[product.ID]
+		product.Price = product.Price * float64(product.Quantity)
 		cart.Products = append(cart.Products, product)
 	}
 	if err != nil {
