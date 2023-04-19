@@ -14,6 +14,7 @@ type IproductRepo interface {
 	GetByID(id uint) (meals entity.Product, err error)
 	GetPaging(req request.PagingRequest) (totalPages int, err error)
 	GetByIDs(req []uint) (resp []entity.Product, err error)
+	Update(body []entity.Product, tx *gorm.DB) error
 }
 
 type productRepo struct {
@@ -30,7 +31,7 @@ func (r *productRepo) Insert(body entity.Product, tx *gorm.DB) error {
 	return tx.Create(&body).Error
 }
 
-func (r *productRepo) Update(body entity.Product, tx *gorm.DB) error {
+func (r *productRepo) Update(body []entity.Product, tx *gorm.DB) error {
 	return tx.Save(&body).Error
 }
 

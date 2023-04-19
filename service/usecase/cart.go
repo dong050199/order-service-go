@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -140,6 +141,15 @@ func (c *cartUsercase) UpdateCart(
 	return
 }
 
+type CreateSaleOrderRequest struct {
+	CartID         uint `json:"cart_id"`
+	UserID         uint `json:"user_id"`
+	PaymentDetails struct {
+		TypeOfPayment  string `json:"type_of_payment"` // online or COD
+		ShippingMethod string `json:"shipping_method"` // method like ... shipping
+	} `json:"payment_details"`
+}
+
 func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID uint) error {
 	cartInfo, err := c.GetCart(ctx, cartID)
 	if err != nil {
@@ -152,10 +162,10 @@ func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID
 		return err
 	}
 
-	defer infra.ReleaseTransaction(tx, err)
-
 	var productOrder []entity.ProductOrder
 	var totalPrice int
+	mapProductQuantity := make(map[uint]int)
+	var productIDs []uint
 	for _, product := range cartInfo.Products {
 		productOrder = append(productOrder, entity.ProductOrder{
 			ProductID: product.ID,
@@ -163,25 +173,55 @@ func (c *cartUsercase) CreateSalesOrder(ctx context.Context, cartID uint, userID
 			Price:     product.Price,
 		})
 		totalPrice += int(product.Price) * product.Quantity
+		productIDs = append(productIDs, product.ID)
+		mapProductQuantity[product.ID] = product.Quantity
 	}
 
-	var request = entity.Order{
-		ProductOrder: productOrder,
-		UserID:       userID,
-		TotalPrice:   totalPrice,
-	}
-
-	err = c.cartRepo.CreateSaleOrder(ctx, request)
+	products, err := c.productRepo.GetByIDs(productIDs)
 	if err != nil {
 		log.Printf("GetCart: %v", err)
 		return err
 	}
 
-	out, err := json.Marshal(request)
+	var productsUpdate []entity.Product
+
+	for _, product := range products {
+		if product.Quantity < mapProductQuantity[product.ID] {
+			return errors.New("Number of products is out of range.")
+		}
+
+		product.Quantity = product.Quantity - mapProductQuantity[product.ID]
+		productsUpdate = append(productsUpdate, product)
+	}
+
+	var saleOrder = entity.Order{
+		ProductOrder: productOrder,
+		UserID:       userID,
+		TotalPrice:   totalPrice,
+	}
+
+	err = c.productRepo.Update(productsUpdate, tx)
+	if err != nil {
+		log.Printf("Update: %v", err)
+		return err
+	}
+	infra.ReleaseTransaction(tx, err)
+
+	err = c.cartRepo.CreateSaleOrder(ctx, saleOrder)
+	if err != nil {
+		log.Printf("GetCart: %v", err)
+		return err
+	}
+	// remove all from cart
+	err = c.UpdateCart(ctx, cartID, request.UpdateCartRequest{
+		Products: []request.ProductCart{},
+	})
 	if err != nil {
 		panic(err)
 	}
 
+	out, _ := json.Marshal(saleOrder)
+	// send message to google chat
 	go c.CallGoogleChat(string(out))
 
 	return nil
